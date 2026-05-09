@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cek Reservasi — Harlys Residence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../index.html" class="nav-logo"><img src="../img/Logo_Hotel.png" alt="Harlys Residence Hotel" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="booking.html">Booking</a>
+      <a href="cek-reservasi.html" class="active">Cek Reservasi</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>Cek <em>Reservasi</em></h1>
+    <p>Lihat status dan detail pemesanan Anda</p>
+  </div>
+
+  <div class="cek-container">
+
+    <!-- Tab: by ID atau by Email -->
+    <div style="display:flex;gap:0;margin-bottom:32px;border-bottom:2px solid var(--border);">
+      <button class="tab-btn active" id="tab-id" onclick="switchTab('id')"
+        style="flex:1;padding:14px;border:none;background:none;cursor:pointer;font-family:var(--font-body);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;">
+        Cari by ID Reservasi
+      </button>
+      <button class="tab-btn" id="tab-email" onclick="switchTab('email')"
+        style="flex:1;padding:14px;border:none;background:none;cursor:pointer;font-family:var(--font-body);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);border-bottom:2px solid transparent;margin-bottom:-2px;">
+        Riwayat by Email
+      </button>
+    </div>
+
+    <!-- Form: by ID -->
+    <div id="form-id">
+      <div class="cek-form-card">
+        <div class="booking-form">
+          <div class="form-group">
+            <label>ID Reservasi</label>
+            <div style="display:flex;gap:12px;">
+              <input type="number" id="r-id" placeholder="Contoh: 1001" style="flex:1;" />
+              <button class="btn-search" onclick="cekById()">Cek</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="result-id"></div>
+    </div>
+
+    <!-- Form: by Email -->
+    <div id="form-email" style="display:none;">
+      <div class="cek-form-card">
+        <div class="booking-form">
+          <div class="form-group">
+            <label>Email Tamu</label>
+            <div style="display:flex;gap:12px;">
+              <input type="email" id="r-email" placeholder="email@contoh.com" style="flex:1;" />
+              <button class="btn-search" onclick="cekByEmail()">Cari</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="result-email"></div>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    function switchTab(tab) {
+      document.getElementById('form-id').style.display    = tab === 'id'    ? 'block' : 'none';
+      document.getElementById('form-email').style.display = tab === 'email' ? 'block' : 'none';
+
+      document.getElementById('tab-id').style.color = tab === 'id' ? 'var(--gold)' : 'var(--text-light)';
+      document.getElementById('tab-email').style.color = tab === 'email' ? 'var(--gold)' : 'var(--text-light)';
+      document.getElementById('tab-id').style.borderBottomColor = tab === 'id' ? 'var(--gold)' : 'transparent';
+      document.getElementById('tab-email').style.borderBottomColor = tab === 'email' ? 'var(--gold)' : 'transparent';
+    }
+
+    async function cekById() {
+      const id = document.getElementById('r-id').value.trim();
+      if (!id) { showToast('Masukkan ID reservasi', 'error'); return; }
+
+      const container = document.getElementById('result-id');
+      container.innerHTML = `<div class="loading"><div class="spinner"></div><p>Mencari...</p></div>`;
+
+      try {
+        const data = await API.getTagihan(id);
+        container.innerHTML = renderReservasiCard(data);
+      } catch (err) {
+        container.innerHTML = `<div class="loading"><p style="color:var(--error)">Reservasi tidak ditemukan.</p></div>`;
+      }
+    }
+
+    async function cekByEmail() {
+      const email = document.getElementById('r-email').value.trim();
+      if (!email) { showToast('Masukkan email', 'error'); return; }
+
+      const container = document.getElementById('result-email');
+      container.innerHTML = `<div class="loading"><div class="spinner"></div><p>Mencari...</p></div>`;
+
+      try {
+        const list = await API.getRiwayatReservasi(email);
+        if (!list.length) {
+          container.innerHTML = `<div class="loading"><p>Tidak ada reservasi untuk email ini.</p></div>`;
+          return;
+        }
+        container.innerHTML = `
+          <p style="color:var(--text-light);font-size:13px;margin-bottom:20px;">${list.length} reservasi ditemukan</p>
+          ${list.map(r => renderRiwayatItem(r)).join('')}
+        `;
+      } catch (err) {
+        container.innerHTML = `<div class="loading"><p style="color:var(--error)">${err.message}</p></div>`;
+      }
+    }
+
+    function renderReservasiCard(d) {
+      return `
+        <div class="reservasi-card">
+          <div class="reservasi-header">
+            <div class="reservasi-id">Reservasi #${d.ID_RESERVASI}</div>
+            <div class="status-badge status-${d.STATUS_RESERVASI}">${d.STATUS_RESERVASI?.replace('_',' ')}</div>
+          </div>
+          <div class="reservasi-body">
+            <div class="reservasi-grid">
+              <div class="reservasi-field">
+                <label>Nama Tamu</label>
+                <p>${d.NAMA_LENGKAP}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Email</label>
+                <p>${d.EMAIL}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Check-In</label>
+                <p>${formatTanggal(d.TANGGAL_CHECK_IN)}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Check-Out</label>
+                <p>${formatTanggal(d.TANGGAL_CHECK_OUT)}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Sumber Booking</label>
+                <p>${d.SUMBER_BOOKING || '-'}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Total Kamar</label>
+                <p>${formatRupiah(d.TOTAL_KAMAR)}</p>
+              </div>
+            </div>
+            <div class="reservasi-total">
+              <div>
+                <label>Grand Total</label>
+                <p>${formatRupiah(d.GRAND_TOTAL)}</p>
+              </div>
+              <a href="booking.html" class="btn-secondary" style="font-size:12px;padding:10px 20px;">
+                Pesan Lagi
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRiwayatItem(r) {
+      return `
+        <div class="reservasi-card" style="margin-bottom:20px;">
+          <div class="reservasi-header">
+            <div class="reservasi-id">Reservasi #${r.ID_RESERVASI}</div>
+            <div class="status-badge status-${r.STATUS_RESERVASI}">${r.STATUS_RESERVASI?.replace('_',' ')}</div>
+          </div>
+          <div class="reservasi-body">
+            <div class="reservasi-grid">
+              <div class="reservasi-field">
+                <label>Check-In</label>
+                <p>${formatTanggal(r.TANGGAL_CHECK_IN)}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Check-Out</label>
+                <p>${formatTanggal(r.TANGGAL_CHECK_OUT)}</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Jumlah Tamu</label>
+                <p>${r.JUMLAH_TAMU} orang</p>
+              </div>
+              <div class="reservasi-field">
+                <label>Total Kamar</label>
+                <p>${formatRupiah(r.TOTAL_KAMAR)}</p>
+              </div>
+            </div>
+            <div style="text-align:right;margin-top:16px;">
+              <button class="btn-secondary" style="font-size:12px;padding:10px 20px;" onclick="lihatDetail(${r.ID_RESERVASI})">
+                Lihat Detail
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function lihatDetail(id) {
+      switchTab('id');
+      document.getElementById('r-id').value = id;
+      cekById();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

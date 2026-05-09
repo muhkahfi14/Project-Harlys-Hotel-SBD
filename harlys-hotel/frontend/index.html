@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harlys Residence — Jakarta Barat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo"><img src="img/Logo_Hotel.png" alt="Harlys Residence Hotel" class="nav-logo-img"></div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/booking.html">Booking</a>
+      <a href="pages/cek-reservasi.html">Cek Reservasi</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Jakarta Barat · Est. 2018</p>
+      <h1 class="hero-title">Tempat Istirahat<br /><em>Terbaik Anda</em></h1>
+      <p class="hero-sub">112 kamar modern di jantung Jakarta Barat.<br />Nikmati kenyamanan dengan harga terjangkau.
+      </p>
+      <a href="pages/booking.html" class="btn-primary">Pesan Sekarang</a>
+    </div>
+    <div class="hero-scroll">scroll</div>
+  </section>
+
+  <!-- SEARCH BAR -->
+  <section class="search-section">
+    <div class="search-card">
+      <h2>Cek Ketersediaan Kamar</h2>
+      <form class="search-form" onsubmit="searchRooms(event)">
+        <div class="form-group">
+          <label>Check-In</label>
+          <input type="date" id="s-checkin" required />
+        </div>
+        <div class="form-group">
+          <label>Check-Out</label>
+          <input type="date" id="s-checkout" required />
+        </div>
+        <div class="form-group">
+          <label>Tamu</label>
+          <select id="s-tamu">
+            <option value="1">1 Tamu</option>
+            <option value="2" selected>2 Tamu</option>
+            <option value="3">3 Tamu</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-search">Cari Kamar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- TIPE KAMAR -->
+  <section class="rooms-section">
+    <div class="section-header">
+      <span class="section-tag">Akomodasi</span>
+      <h2>Pilihan Kamar</h2>
+      <p>Dari kamar Standard hingga Superior Deluxe, kami memiliki pilihan yang tepat untuk setiap kebutuhan.</p>
+    </div>
+    <div class="rooms-grid" id="rooms-grid">
+      <div class="room-skeleton"></div>
+      <div class="room-skeleton"></div>
+      <div class="room-skeleton"></div>
+      <div class="room-skeleton"></div>
+    </div>
+  </section>
+
+  <!-- FASILITAS -->
+  <section class="facilities-section">
+    <div class="section-header light">
+      <span class="section-tag">Layanan</span>
+      <h2>Fasilitas Hotel</h2>
+    </div>
+    <div class="facilities-grid">
+      <div class="facility-item">
+        <div class="facility-icon">☕</div>
+        <h3>Harlys Café</h3>
+        <p>Nikmati sarapan dan minuman segar setiap hari</p>
+      </div>
+      <div class="facility-item">
+        <div class="facility-icon">🏢</div>
+        <h3>Meeting Room</h3>
+        <p>Ruang rapat modern untuk kebutuhan bisnis</p>
+      </div>
+      <div class="facility-item">
+        <div class="facility-icon">👔</div>
+        <h3>Laundry</h3>
+        <p>Layanan cuci baju same-day delivery</p>
+      </div>
+      <div class="facility-item">
+        <div class="facility-icon">🚗</div>
+        <h3>Airport Transfer</h3>
+        <p>Antar jemput bandara dengan armada nyaman</p>
+      </div>
+      <div class="facility-item">
+        <div class="facility-icon">📶</div>
+        <h3>WiFi Premium</h3>
+        <p>Koneksi internet cepat di seluruh area hotel</p>
+      </div>
+      <div class="facility-item">
+        <div class="facility-icon">🛎️</div>
+        <h3>Room Service</h3>
+        <p>Pemesanan makanan 24 jam langsung ke kamar</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo"><img src="img/Logo_Hotel.png" alt="Harlys Residence Hotel"
+            class="nav-logo-img nav-logo-footer"></div>
+        <p>Jl. Tomang Tinggi Raya No. 2. Jakarta Barat - Indonesia<br />📞 (021) 1234-4352-319<br>
+          Email: info@harlysresidence.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 Harlys Residence. All rights reserved.</div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
